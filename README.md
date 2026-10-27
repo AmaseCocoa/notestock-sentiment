@@ -1,0 +1,2 @@
+# notestock-sentiment
+notestockのエクスポートから期間別の投稿の傾向を分析する何か
