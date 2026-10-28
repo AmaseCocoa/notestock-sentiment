@@ -2,6 +2,8 @@ import json
 import re
 from collections import defaultdict
 
+from text_cleaner import clean_text_optimized, preprocessing_rules
+
 patterns = [r'>\s*:(.*?):\s*\n(.*)']
 
 def detect_with_regex(text) -> bool:
@@ -12,6 +14,11 @@ def detect_with_regex(text) -> bool:
             return True
     return False
 
+def check_text_length(text: str, min_length: int = 4) -> bool:
+    replaced_text = text
+    for val in preprocessing_rules.values():
+        replaced_text: str = replaced_text.replace(val, "")
+    return len(replaced_text) >= min_length
 
 with open("./posts.json", "r") as f:
     data_list = json.load(f)
@@ -27,15 +34,17 @@ for item in data_list:
 
     content = str(item["content"].lower())
 
-    if (
+    if not (
         any(word in content for word in words)
-        or len(content) < 3
         or (content.startswith(":") and content.endswith(":"))
         or detect_with_regex(content)
     ):
-        pass
-    else:
-        grouped_data[year_month][visibility].append(item)
+        processed_text = clean_text_optimized(str(item["content"])).replace("\n", " ")
+        if processed_text not in preprocessing_rules.values() and check_text_length(processed_text):
+            grouped_data[year_month][visibility].append({
+                "published": item["published"],
+                "content": processed_text
+            })
 
 result = {
     ym: {vis: items for vis, items in vis_dict.items()}
