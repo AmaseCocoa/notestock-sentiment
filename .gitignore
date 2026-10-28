@@ -177,3 +177,5 @@ pyrightconfig.json
 
 posts.json
 posts_preprocessed.json
+to_process.json
+result.json
