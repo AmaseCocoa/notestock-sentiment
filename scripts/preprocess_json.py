@@ -34,13 +34,15 @@ for item in data_list:
 
     content = str(item["content"].lower())
 
+    process_text = lambda t, emoji_replace: clean_text_optimized(str(t), 20, replace_emoji_to_placeholder=emoji_replace).replace("\n", " ")
+
     if not (
         any(word in content for word in words)
         or (content.startswith(":") and content.endswith(":"))
         or detect_with_regex(content)
     ):
-        processed_text = clean_text_optimized(str(item["content"])).replace("\n", " ")
-        if processed_text not in preprocessing_rules.values() and check_text_length(processed_text):
+        processed_text = process_text(item["content"], False)
+        if processed_text not in preprocessing_rules.values() and check_text_length(process_text(item["content"], True)):
             grouped_data[year_month][visibility].append({
                 "published": item["published"],
                 "content": processed_text

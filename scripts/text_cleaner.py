@@ -12,7 +12,7 @@ def batch_replace(text) -> str:
         text = re.sub(pattern, replacement, text)
     return text
 
-def clean_text_optimized(text, max_emoji_len=20):
+def clean_text_optimized(text, max_emoji_len=20, replace_emoji_to_placeholder: bool = False):
     text = batch_replace(text)
 
     code_pattern = r"(```[\s\S]*?```|`[^`\n]+`)"
@@ -24,8 +24,12 @@ def clean_text_optimized(text, max_emoji_len=20):
         (r"<[^>]+>", ""),
         (rf":[\w.\-]{{{max_emoji_len},}}:", ""),
         (r"(:[\w.\-]+:)(\s*\1)+", r"\1"),
-        (r":([\w.\-]+):", r" \1 "),
     ]
+
+    if replace_emoji_to_placeholder:
+        normal_text_rules.append((r":([\w.\-]+):", r"[EMOJI]"))
+    else:
+        normal_text_rules.append((r":([\w.\-]+):", r" \1 "))
 
     def remove_nested_brackets(target_text):
         nested_pattern = r"\$\[[^\s\]]+\s+([^\$\[\]]+?)\]"
