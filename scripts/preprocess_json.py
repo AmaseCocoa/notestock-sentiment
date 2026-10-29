@@ -2,7 +2,7 @@ import json
 import re
 from collections import defaultdict
 
-from text_cleaner import clean_text_optimized, preprocessing_rules
+from notestock_sentiment import clean_text, preprocessing_rules
 
 patterns = [r'>\s*:(.*?):\s*\n(.*)']
 
@@ -34,7 +34,7 @@ for item in data_list:
 
     content = str(item["content"].lower())
 
-    process_text = lambda t, emoji_replace: clean_text_optimized(str(t), 20, replace_emoji_to_placeholder=emoji_replace).replace("\n", " ")
+    process_text = lambda t, emoji_replace: clean_text(str(t), 20, replace_emoji_to_placeholder=emoji_replace).replace("\n", " ")
 
     if not (
         any(word in content for word in words)

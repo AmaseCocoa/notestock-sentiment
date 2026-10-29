@@ -62,14 +62,21 @@ def eval_text(text: str):
             "raw": raw_data,
         }
 
+class PostData:
+    published: datetime
 
-with open("./to_process.json", "r") as f:
-    texts = json.load(f)
+with open("./posts_preprocessed.json", "r") as f:
+    data:  = json.load(f)
 
 results = []
 for text in texts:
     result = eval_text(text)
-    results.append({"text": text, "result": result})
+    results.append({
+        "text": text,
+        "date": "",
+        "visibility": "",
+        "result": result
+    })
 
 with open("./result.json", "w") as fp:
     json.dump(results, fp, indent=2, ensure_ascii=False)
