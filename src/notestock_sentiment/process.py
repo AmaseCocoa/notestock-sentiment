@@ -1,3 +1,4 @@
+import datetime
 import json
 from typing import cast
 
@@ -63,10 +64,12 @@ def eval_text(text: str):
         }
 
 class PostData:
-    published: datetime
+    published: str
+    visibility: str
+    content: str
 
 with open("./posts_preprocessed.json", "r") as f:
-    data:  = json.load(f)
+    data: PostData = json.load(f)
 
 results = []
 for text in texts:
